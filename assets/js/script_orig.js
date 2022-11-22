@@ -17,47 +17,47 @@ $(function () {
 
     //to capture event when the save button or save icon is clicked
     if (element.matches('button') || element.matches('i')) {
+      var row = "#hour-";
 
-      //find the row
-      var row = "#hour-" + element.id;
-
-      //find the parent div of the row
+      if (element.id > 12)
+        row += (element.id - 12);
+      else
+        row += element.id;
+      console.log(row);
       var parent = $(row);
-
-      //get the value from text area which is second child of div
       var event = parent.children().eq(1).val();
 
       if (event.trim() === "")
         return;
 
-      //creat an object to store the row and event created in local storage
       var entry = {
         hour: element.id,
         event: event.trim(),
       };
 
-      //add the latest entry to the eventList
+      //add the latest userScore to the ScoreList
       eventList[eventList.length] = entry;
 
-      //write eventList to local storage
+      //weite scoreList to local storage
       localStorage.setItem("eventList", JSON.stringify(eventList));
     }
 
   });
 
-
-  //This timer here will  change past, current and future colors after each hour
+  //
+  // TODO: Add code to apply the past, present, or future class to each time
+  // block by comparing the id to the current hour. HINTS: How can the id
+  // attribute of each time-block be used to conditionally add or remove the
+  // past, present, and future classes? How can Day.js be used to get the
+  // current hour in 24-hour time?
+  //WIll set a timer here for each hour to change past, current and future colors
   var timerInterval = setInterval(function () {
 
-    var hour = dayjs().hour;
-    
-    if(currentHour === hour){
-      console.log(currentHour, hour);
-      currentHour = hour;
-      location.reload();
-    }
+    currentHour = dayjs().hour;
+    //addWorkHours();
+    location.reload();
 
-  }, 1000);
+  }, 3600000);
 
   //Function to retrieve the calendar events from local storage
   function getStoredSchedule() {
@@ -73,6 +73,7 @@ $(function () {
   function populateEvents(row) {
 
     for (var i = 0; i < eventList.length; i++) {
+      console.log(i, eventList[i].hour, eventList[i].event, row);
       if (parseInt(eventList[i].hour) === row) {
         return eventList[i].event;
       }
@@ -94,20 +95,19 @@ $(function () {
 
       time = i;
 
-      //caluculate the display time e.g 1am/pm instead of 13am/pm 
+      //we need the time to match current hour so calculating 
       if (i > 12) {
         amPM = "PM";
         time = i - 12;
-      } else if (i === 12) { 
+      } else if (i === 12) {
         amPM = "PM";
       }
 
-      //add div element to HTML to display time
-      var mainDiv = $('<div>')
-      mainDiv.attr('id', 'hour-' + i);
-      mainDiv.attr('class', 'row time-block');
 
-      //Check past, present, future based on current hour and add appropriate class to the main div
+      var mainDiv = $('<div>')
+      mainDiv.attr('id', 'hour-' + time);
+      mainDiv.attr('class', 'row time-block');
+      //add if statement to check past, present, future
       if (i < currentHour)
         mainDiv.addClass('past');
       else if (i === currentHour)
@@ -115,20 +115,16 @@ $(function () {
       else
         mainDiv.addClass('future');
 
-      //add a div to display time for a row in the schdulter
       mainDiv.append('<div class="col-2 col-md-1 hour text-center py-3">' + time + amPM + '</div>');
-      //add textarea to diaply event added by the user
       mainDiv.append('<textarea class=\"col-8 col-md-10 description\" rows=\"3\"> </textarea>');
-      //add a button and a save icon to save the entry by the user
       mainDiv.append('<button class=\"btn saveBtn col-2 col-md-1\" aria-label=\"save\"><i class=\"fas fa-save\" aria-hidden=\"true\"></i></button>');
 
-      //adding id sttribute to the button and icon to be used for saving and then retrieving the row entry from thelocal storage
       mainDiv.children('button').attr('id', i);
       mainDiv.children('button').children('i').attr('id', i);
-    
-      //checkif some entry for the row exists in thelocal storage.  If so then populate the text are with it
+      mainDiv.children('textarea').attr('color', 'black');
+
       var storedEvent = populateEvents(i);
-      
+      console.log("storedevent at " + i + " = " + storedEvent);
       if (storedEvent !== "")
         mainDiv.children('textarea').append(storedEvent);
 
@@ -138,13 +134,18 @@ $(function () {
   }
 
   function init() {
-    //Get stored scores
+    //get stored scores
     getStoredSchedule();
-
-    //Add rows to scheduler.  If ther are events stored in the local storage for any hour, they will be retrieved and displayed.
+    //add rows to calender
     addWorkHours();
   }
 
   init();
+
+  //
+  // TODO: Add code to get any user input that was saved in localStorage and set
+  // the values of the corresponding textarea elements. HINT: How can the id
+  // attribute of each time-block be used to do this?
+  //
   
 });
