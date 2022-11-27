@@ -11,7 +11,7 @@ $(function () {
   currDateTime.text(dayjs().format('dddd, MMMM D'));
 
   // listener function for click events on the save button.
-  containerEl.on('click', function (event) {
+  containerEl.on('click', function (event) { 
 
     var element = event.target;
 
