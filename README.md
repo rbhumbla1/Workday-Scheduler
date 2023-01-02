@@ -17,7 +17,7 @@ Workday-Scduler shows aa calendar for working day i.e. 8 hours from 9am to 5pm. 
 ![Screenshot of the scheduler](./assets/images/screenshot.JPG)
 
 Demo of the project:
-!Workday Scheduler demo](./assets/images/Workday-Scheduler-Demo.gif)
+![Workday Scheduler demo](./assets/images/Workday-Scheduler-Demo.gif)
 
 
 ## Usage
